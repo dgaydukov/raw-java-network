@@ -15,6 +15,34 @@ Strictly speaking, since it's UDP there is no client & server. And if you look i
 
 ##### UDP Unicast
 If you launch [UDP App](/src/main/java/com/network/raw/udp/unicast/App.java) and start wireshark, you can see that client `localhost:4444` sending messages to server `localhost:5555` and getting UDP message back.
+How can you confirm that both are running as server/client. You can use network utilities like `telnet/netcat/nmap`. Below we would use netcat to connect to both UdpClient/UdpServer and send the messages
+```shell
+# connect to server
+nc -u 127.0.0.1 5555
+# send message, and get response from server
+hello
+server response: originalMsg=hello
+
+# connect to client
+nc -u 127.0.0.1 4444
+# send message, but since client is not responding, you won't get back any response
+hello
+```
+You can also use `nmap` to check if ports are open and app is running
+```shell
+# check UDP ports (you need sudo for this)
+sudo nmap -sU 127.0.0.1
+# response
+Nmap scan report for localhost (127.0.0.1)
+Host is up (0.00019s latency).
+Not shown: 995 closed udp ports (port-unreach)
+PORT     STATE         SERVICE
+4444/udp open|filtered krb524
+5555/udp open          rplay
+
+Nmap done: 1 IP address (1 host up) scanned in 1.31 seconds
+```
+
 Here you can see captured logs from wireshark
 ![wireshark UDP client-server](/data/wireshark-udp-client-server.png)
 Below is detailed package that was sent from client to server
