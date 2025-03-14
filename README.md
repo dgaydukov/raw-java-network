@@ -20,6 +20,10 @@ Below is detailed package that was sent from client to server
 Below is response from server (since it's UDP it's not response, but just message sent from server to client)
 ![wireshark UDP server response](/data/wireshark-udp-server-response.png)
 
+##### UDP Multicast
+In IPv4, any address between 224.0.0.0 to 239.255.255.255 can be used as a multicast address. Only those nodes that subscribe to a group receive packets communicated to the group.
+
+
 
 ### TCP
 

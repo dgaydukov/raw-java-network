@@ -44,7 +44,7 @@ public class UdpClient implements Runnable {
         int i = 0;
         while(true){
             send("msg_" + i++);
-            sleep(5);
+            sleep(10);
         }
     }
 
