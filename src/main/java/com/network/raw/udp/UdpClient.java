@@ -1,8 +1,11 @@
 package com.network.raw.udp;
 
+import lombok.extern.slf4j.Slf4j;
+
 import java.io.IOException;
 import java.net.*;
 
+@Slf4j
 public class UdpClient implements Runnable {
     private DatagramSocket socket;
     private InetAddress address;
@@ -10,10 +13,10 @@ public class UdpClient implements Runnable {
 
     private byte[] buffer;
 
-    public UdpClient(int serverPort) {
+    public UdpClient(int serverPort, int clientPort) {
         this.serverPort = serverPort;
         try{
-            socket = new DatagramSocket();
+            socket = new DatagramSocket(clientPort);
             address = InetAddress.getByName("localhost");
         } catch (SocketException | UnknownHostException ex){
             throw new RuntimeException(ex);
@@ -29,6 +32,7 @@ public class UdpClient implements Runnable {
             packet = new DatagramPacket(buffer, buffer.length);
             socket.receive(packet);
             String received = new String(packet.getData(), 0, packet.getLength());
+            log.info("Client received: address={}, port={}, msg={}", packet.getAddress(), packet.getPort(), received);
             return received;
         } catch (IOException ex){
             throw new RuntimeException(ex);
@@ -39,8 +43,7 @@ public class UdpClient implements Runnable {
     public void run() {
         int i = 0;
         while(true){
-            String msg = send("msg_" + i++);
-            System.out.println("Client received: msg=" + msg);
+            send("msg_" + i++);
             sleep(5);
         }
     }
