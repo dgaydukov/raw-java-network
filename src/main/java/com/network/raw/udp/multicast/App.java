@@ -1,4 +1,7 @@
-package com.network.raw.udp;
+package com.network.raw.udp.multicast;
+
+import com.network.raw.udp.unicast.UdpClient;
+import com.network.raw.udp.unicast.UdpServer;
 
 public class App {
   public static void main(String[] args) {
