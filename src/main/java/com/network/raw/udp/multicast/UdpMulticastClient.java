@@ -33,7 +33,7 @@ public class UdpMulticastClient implements Runnable {
                 DatagramPacket packet = new DatagramPacket(buffer, buffer.length, address, serverPort);
                 log.info("client sending: msg={}, address={}, port={}", msg, address, serverPort);
                 socket.send(packet);
-                sleep(10);
+                sleep(5);
             } catch (IOException ex) {
                 throw new RuntimeException(ex);
             }
