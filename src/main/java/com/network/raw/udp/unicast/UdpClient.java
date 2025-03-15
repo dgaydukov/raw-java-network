@@ -13,18 +13,19 @@ public class UdpClient implements Runnable {
 
     private byte[] buffer;
 
-    public UdpClient(int serverPort, int clientPort) {
+    public UdpClient(int clientPort, int serverPort, String serverHost) {
         this.serverPort = serverPort;
         try{
             socket = new DatagramSocket(clientPort);
-            address = InetAddress.getByName("localhost");
+            address = InetAddress.getByName(serverHost);
+            socket.connect(address, serverPort);
         } catch (SocketException | UnknownHostException ex){
             throw new RuntimeException(ex);
         }
     }
 
-    public String send(String msg){
-        try{
+    public void sendAndReceive(String msg) {
+        try {
             buffer = msg.getBytes();
             DatagramPacket packet = new DatagramPacket(buffer, buffer.length, address, serverPort);
             socket.send(packet);
@@ -33,8 +34,11 @@ public class UdpClient implements Runnable {
             socket.receive(packet);
             String received = new String(packet.getData(), 0, packet.getLength());
             log.info("Client received: address={}, port={}, msg={}", packet.getAddress(), packet.getPort(), received);
-            return received;
-        } catch (IOException ex){
+        } catch (PortUnreachableException ex) {
+            long delay = 10;
+            log.error("UDP endpoint is not reachable. Retry after delay: address={}, port={}, delay={}", address, serverPort, delay);
+            sleep(delay);
+        } catch (IOException ex) {
             throw new RuntimeException(ex);
         }
     }
@@ -43,7 +47,7 @@ public class UdpClient implements Runnable {
     public void run() {
         int i = 0;
         while(true){
-            send("msg_" + i++);
+            sendAndReceive("msg_" + i++);
             sleep(5);
         }
     }
