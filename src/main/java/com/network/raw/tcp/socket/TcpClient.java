@@ -17,6 +17,8 @@ public class TcpClient implements Runnable{
     public TcpClient(int serverPort, String serverHost){
         try{
             clientSocket = new Socket(serverHost, serverPort);
+            out = new PrintWriter(clientSocket.getOutputStream(), true);
+            in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
         } catch (IOException ex){
             throw new RuntimeException(ex);
         }
@@ -25,9 +27,6 @@ public class TcpClient implements Runnable{
 
     public void sendAndReceive(String msg) {
         try{
-            System.out.println("sendAndReceive");
-            out = new PrintWriter(clientSocket.getOutputStream(), true);
-            in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
             out.println(msg);
             String res = in.readLine();
             log.info("Client received: msg={}", res);
@@ -42,7 +41,7 @@ public class TcpClient implements Runnable{
         while (true) {
             String msg = "msg_" + i++;
             sendAndReceive(msg);
-            sleep(1);
+            sleep(5);
         }
     }
 

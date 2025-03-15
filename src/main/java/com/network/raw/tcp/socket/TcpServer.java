@@ -1,5 +1,6 @@
 package com.network.raw.tcp.socket;
 
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.BufferedReader;
@@ -12,7 +13,6 @@ import java.net.Socket;
 @Slf4j
 public class TcpServer implements Runnable{
     private ServerSocket serverSocket;
-    private Socket clientSocket;
     private PrintWriter out;
     private BufferedReader in;
 
@@ -24,30 +24,36 @@ public class TcpServer implements Runnable{
         }
     }
 
-    public void stop() throws IOException {
-        in.close();
-        out.close();
-        clientSocket.close();
-        serverSocket.close();
-    }
-
-    public void handleRequest(){
+    public void handleUser(Socket clientSocket){
         try{
-            clientSocket = serverSocket.accept();
             out = new PrintWriter(clientSocket.getOutputStream(), true);
             in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
             String msg = in.readLine();
-            log.info("Server received: msg={}", msg);
+            log.info("Server received: msg={}, address={}, port={}", msg, clientSocket.getInetAddress(), clientSocket.getPort());
             out.println("server response, originalMsg=" + msg);
         } catch (IOException ex){
             throw new RuntimeException(ex);
         }
     }
 
+    public void createUserSession(){
+        try {
+            final Socket clientSocket = serverSocket.accept();
+            new Thread(()->{
+                while (true){
+                    handleUser(clientSocket);
+                }
+            }).start();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+    }
+
     @Override
     public void run() {
         while (true){
-            handleRequest();
+            createUserSession();
         }
     }
 }

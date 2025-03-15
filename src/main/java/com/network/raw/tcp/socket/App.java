@@ -8,5 +8,6 @@ public class App {
         TcpClient client = new TcpClient(serverPort, serverHost);
         new Thread(server).start();
         new Thread(client).start();
+        //new Thread(new TcpClient(serverPort, serverHost)).start();
     }
 }
