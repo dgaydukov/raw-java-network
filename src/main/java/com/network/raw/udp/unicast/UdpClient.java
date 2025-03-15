@@ -18,6 +18,7 @@ public class UdpClient implements Runnable {
         try{
             socket = new DatagramSocket(clientPort);
             address = InetAddress.getByName(serverHost);
+            // use this line so java can intercept ICMP message and throw PortUnreachableException
             socket.connect(address, serverPort);
         } catch (SocketException | UnknownHostException ex){
             throw new RuntimeException(ex);

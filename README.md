@@ -58,9 +58,20 @@ Here you can see captured logs from wireshark
 Below is detailed package that was sent from client to server
 ![wireshark UDP client request](/data/wireshark-udp-multicast-message.png)
 
+##### UDP Connection Detection
+Although UDP is connection-less protocol, and there is no way to track packet delivery, there is still a way to detect if endpoint (host:port) is reachable or not. If you try to send packet to unreachable endpoint, you will get back ICMP (Internet Control Message Protocol) message.
+You can imitate it by disable server creation in [UDP App](/src/main/java/com/network/raw/udp/unicast/App.java). The key is to call `socket.connect(address, serverPort);`. Keep in mind if you don't call this method, java code will not handle ICMP message. From the method description of `DatagramSocket.connect` you can see that
+```
+ If the remote destination to which the socket is connected does not exist, or is otherwise unreachable, and if an ICMP destination unreachable packet has been received for that address, then a subsequent call to send or receive may throw a PortUnreachableException. Note, there is no guarantee that the exception will be thrown.
+```
+So you add code to handle `PortUnreachableException`, and by this you can understand that message wasn't delivered because endpoint is not active (no UDP application is listening on this port).
+Below is how it looks like from wireshark
+![wireshark UDP client-server](/data/wireshark-udp-icmp-response.png)
+This is how message itself looks like
+![wireshark UDP client-server](/data/wireshark-udp-icmp-message.png)
 
 ### TCP
-Transmission Control Protocol - compare to UDP is reliable and connection-based. To start communication client and server need to establish connection first and then they can keep sending messages to each other using this connection. Terminology also differs, compare to datagrams in UDP, here packets are called segments. TCP ensures that segments are delivered and ordered. If there is network congestion it do flow control. That's why TCP packet is larger than UDP, here you need to have sequence number and acknowledgement number to keep track and order of segments sent.
+Transmission Control Protocol - compare to UDP is reliable and connection-based. To start communication client and server need to establish connection first, and then they can keep sending messages to each other using this connection. Terminology also differs, compare to datagrams in UDP, here packets are called segments. TCP ensures that segments are delivered and ordered. If there is network congestion it do flow control. That's why TCP packet is larger than UDP, here you need to have sequence number and acknowledgement number to keep track and order of segments sent.
 
 add this code `socket.connect(address, 6666);` and icmp error
 https://stackoverflow.com/questions/33260478/udp-in-java-thinks-that-udp-has-connections
