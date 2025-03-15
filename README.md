@@ -79,7 +79,7 @@ Don't confuse following protocols:
 * All other communication are based on either of these 3, for example Kafka underneath using its own binary implementation on top of TCP
 Here we will show java examples with all of above implementation starting with raw TCP
 
-##### Java Socket Programming
+##### Java Socket
 The term socket programming can be applied to both TCP and UDP, but usually when we say socket, we imply TCP socket. Since TCP is connection-based protocol, here we can have a proper Client and Server. Where Client connects to Server, and they start communicate. You can run our [TCP App](/src/main/java/com/network/raw/tcp/socket/App.java) and see how it works. You can connect with netcat. App is written to such a way that for each new connection it creates a separate thread where it handles it.
 ```shell
 # connect to TCP server
@@ -112,6 +112,18 @@ You can notice that `Seq, Ack` keep increasing:
 TCP using these 2 number to understand if some packets are lost
 4. When somebody decides to close connection he sends `FIN`
 ![wireshark TCP close](/data/wireshark-tcp-close-connection.png)
+
+##### Java WebSocket
+* websocket is application level protocol (similar to HTTP) that runs on top of TCP
+* it has its own protocol rules (just like HTTP) like handshake
+* it's designed to run in the browser, so browser can connect to your application and they can communicate with each other
+* java doesn't have default implementation, but there are many third-party libraries
+Don't confuse it with plain socket which is java native implementation of TCP protocol. It's versatile and can be used anywhere.
+
+##### Java HTTP
+* HTTP is application-level protocol that runs on top of TCP
+* it's connection-less protocol, where client connect to server, get response and connection is closed
+* you can implement basic HTTP protocol on top of Java sockets
 
 ### Wireshark
 For better understanding of network communication you can use [wireshark](https://www.wireshark.org) app for traffic analysis. With this utility you can view network packages and analyze their data.
