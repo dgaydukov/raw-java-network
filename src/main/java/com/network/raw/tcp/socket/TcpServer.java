@@ -25,14 +25,19 @@ public class TcpServer implements Runnable{
     }
 
     public void handleMessage(Socket clientSocket){
-        try{
-            out = new PrintWriter(clientSocket.getOutputStream(), true);
-            in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
-            String msg = in.readLine();
-            log.info("Server received: msg={}, address={}, port={}", msg, clientSocket.getInetAddress(), clientSocket.getPort());
-            out.println("server response, originalMsg=" + msg);
-        } catch (IOException ex){
-            throw new RuntimeException(ex);
+        while (true){
+            try{
+                out = new PrintWriter(clientSocket.getOutputStream(), true);
+                in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
+                String msg = in.readLine();
+                log.info("Server received: msg={}, address={}, port={}", msg, clientSocket.getInetAddress(), clientSocket.getPort());
+                if (msg == null){
+                    break;
+                }
+                out.println("server response, originalMsg=" + msg);
+            } catch (IOException ex){
+                throw new RuntimeException(ex);
+            }
         }
     }
 
@@ -41,9 +46,7 @@ public class TcpServer implements Runnable{
             final Socket clientSocket = serverSocket.accept();
             log.info("Client connected: address={}, port={}", clientSocket.getInetAddress(), clientSocket.getPort());
             new Thread(()->{
-                while (true){
                     handleMessage(clientSocket);
-                }
             }).start();
         } catch (IOException e) {
             throw new RuntimeException(e);

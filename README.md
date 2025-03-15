@@ -102,6 +102,16 @@ This names from TCP header flags
    * server send response message `PSH, ACK`
    * client responds with `ACK`
 ![wireshark TCP messages](/data/wireshark-tcp-4-messages.png)
+3. If you send data again through netcat you will see another 4 messages in wireshark
+![wireshark TCP messages](/data/wireshark-tcp-4-messages-2.png)
+You can notice that `Seq, Ack` keep increasing:
+* Seq (Sequence number) - how many bytes sender sent to receiver:
+  * for `SYN, FIN` - increasing for 1
+  * for any data - increasing for number of bytes in the message
+* Ack (Acknowledgement number) - how many bytes receiver already received
+TCP using these 2 number to understand if some packets are lost
+4. When somebody decides to close connection he sends `FIN`
+![wireshark TCP close](/data/wireshark-tcp-close-connection.png)
 
 ### Wireshark
 For better understanding of network communication you can use [wireshark](https://www.wireshark.org) app for traffic analysis. With this utility you can view network packages and analyze their data.
