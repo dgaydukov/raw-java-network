@@ -2,19 +2,19 @@ package com.network.raw.tcp.socket;
 
 import lombok.extern.slf4j.Slf4j;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
+import java.io.*;
 import java.net.Socket;
+import java.util.Random;
 
 @Slf4j
 public class TcpClient implements Runnable{
     private Socket clientSocket;
     private PrintWriter out;
     private BufferedReader in;
+    final int clientId;
 
     public TcpClient(int serverPort, String serverHost){
+        clientId = new Random().nextInt(100, 999);
         try{
             clientSocket = new Socket(serverHost, serverPort);
             out = new PrintWriter(clientSocket.getOutputStream(), true);
@@ -39,9 +39,9 @@ public class TcpClient implements Runnable{
     public void run() {
         int i = 0;
         while (true) {
-            String msg = "msg_" + i++;
+            String msg = "msg_" + clientId + "__" + i++;
             sendAndReceive(msg);
-            sleep(5);
+            sleep(30);
         }
     }
 

@@ -39,6 +39,7 @@ public class TcpServer implements Runnable{
     public void createUserSession(){
         try {
             final Socket clientSocket = serverSocket.accept();
+            log.info("Client connected: address={}, port={}", clientSocket.getInetAddress(), clientSocket.getPort());
             new Thread(()->{
                 while (true){
                     handleUser(clientSocket);

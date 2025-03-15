@@ -80,7 +80,14 @@ Don't confuse following protocols:
 Here we will show java examples with all of above implementation starting with raw TCP
 
 ##### Java Socket Programming
-The term socket programming can be applied to both TCP and UDP, but usually when we say socket, we imply TCP socket. Since TCP is connection-based protocol, here we can have a proper Client and Server. Where Client connects to Server, and they start communicate.
+The term socket programming can be applied to both TCP and UDP, but usually when we say socket, we imply TCP socket. Since TCP is connection-based protocol, here we can have a proper Client and Server. Where Client connects to Server, and they start communicate. You can run our [TCP App](/src/main/java/com/network/raw/tcp/socket/App.java) and see how it works. You can connect with netcat. App is written to such a way that for each new connection it creates a separate thread where it handles it.
+```shell
+# connect to TCP server
+nc 127.0.0.1 5555
+# send message and get response
+hello
+server response, originalMsg=hello
+```
 
 ### Wireshark
 For better understanding of network communication you can use [wireshark](https://www.wireshark.org) app for traffic analysis. With this utility you can view network packages and analyze their data.
