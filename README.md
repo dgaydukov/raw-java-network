@@ -72,18 +72,11 @@ This is how message itself looks like
 
 ### TCP
 Transmission Control Protocol - compare to UDP is reliable and connection-based. To start communication client and server need to establish connection first, and then they can keep sending messages to each other using this connection. Terminology also differs, compare to datagrams in UDP, here packets are called segments. TCP ensures that segments are delivered and ordered. If there is network congestion it do flow control. That's why TCP packet is larger than UDP, here you need to have sequence number and acknowledgement number to keep track and order of segments sent.
-
-add this code `socket.connect(address, 6666);` and icmp error
-https://stackoverflow.com/questions/33260478/udp-in-java-thinks-that-udp-has-connections
-
-
-
-What is the difference between 3:
-TCP/IP
-Socket
-WebSocket
-HTTP
-Kafka
+Don't confuse following protocols:
+* Socket - raw TCP/IP contamination. When we talk about java socket - we imply that this is java abstraction on TCP, so TCP java programming is basically socket programming and based on 2 java classes `Socket/ServerSocket`.
+* HTTP - abstraction on top of TCP with java
+* WebSocket - abstraction on top of TCP
+* All other communication are based on either of these 3, for example Kafka underneath using it's own binary implementation on top of TCP
 
 ### Wireshark
 For better understanding of network communication you can use [wireshark](https://www.wireshark.org) app for traffic analysis. With this utility you can view network packages and analyze their data.
