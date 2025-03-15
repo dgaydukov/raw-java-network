@@ -24,7 +24,7 @@ public class TcpServer implements Runnable{
         }
     }
 
-    public void handleUser(Socket clientSocket){
+    public void handleMessage(Socket clientSocket){
         try{
             out = new PrintWriter(clientSocket.getOutputStream(), true);
             in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
@@ -36,25 +36,24 @@ public class TcpServer implements Runnable{
         }
     }
 
-    public void createUserSession(){
+    public void handleUser(){
         try {
             final Socket clientSocket = serverSocket.accept();
             log.info("Client connected: address={}, port={}", clientSocket.getInetAddress(), clientSocket.getPort());
             new Thread(()->{
                 while (true){
-                    handleUser(clientSocket);
+                    handleMessage(clientSocket);
                 }
             }).start();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-
     }
 
     @Override
     public void run() {
         while (true){
-            createUserSession();
+            handleUser();
         }
     }
 }

@@ -88,6 +88,20 @@ nc 127.0.0.1 5555
 hello
 server response, originalMsg=hello
 ```
+You can check in wireshark how TCP actually differs from UDP. If you run the App, but comment client, only server.
+1. Open TCP connection with netcat `nc 127.0.0.1 5555` - just open don't type anything
+You will see that 4 messages in wireshark:
+   * Client send `SYN` messages (syn from synchronized)
+   * Server responds with `SYN, ACK` (ack from acknowledged)
+   * Client sends `ACK`
+This names from TCP header flags
+![wireshark TCP client-server](/data/wireshark-tcp-open-connection.png)
+2. Send message in netcat. You will get response from the server (this is how this app works). In wireshark you will see 4 messages
+   * client send data segment to server `PSH, ACK`
+   * server responds with `ACK`
+   * server send response message `PSH, ACK`
+   * client responds with `ACK`
+![wireshark TCP messages](/data/wireshark-tcp-4-messages.png)
 
 ### Wireshark
 For better understanding of network communication you can use [wireshark](https://www.wireshark.org) app for traffic analysis. With this utility you can view network packages and analyze their data.
