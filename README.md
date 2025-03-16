@@ -125,9 +125,15 @@ TCP using these 2 number to understand if some packets are lost
 * java doesn't have default implementation, but there are many third-party libraries
 * `javax.websocket` was moved to `jakarta API`
 Don't confuse it with plain socket which is java native implementation of TCP protocol. It's versatile and can be used anywhere.
-You can use node.js utility `wscat -c ws://127.0.0.1:8080` to connect to ws and run the app.
+You can use node.js utility `wscat -c ws://127.0.0.1:8080/ws` to connect to ws and run the app.
 Although `javax.websocket` defines API to build websocket server, there is no such server in java. You have to either use any third-party servers or manually setup your own server with `java.net.SocketServer` class. Otherwise, your websocket just would be class in java.
-  
+Websocket under-the-hood works on top of TCP, and same way open TCP connection and sends messages.
+1. connect to ws `wscat -c ws://127.0.0.1:8080/ws`. Here you see multiple message for opening connection
+![wireshark websocket](/data/wireshark-websocket-connect.png)
+2. send message and get response - here you see 4 messages to send text to server, ACK, server response and client ACK
+![wireshark websocket](/data/wireshark-websocket-send-message.png)
+3. close connection - here you see multiple TCP messages
+![wireshark websocket](/data/wireshark-websocket-disconnect.png)
 
 ##### Java HTTP
 * HTTP is application-level protocol that runs on top of TCP
