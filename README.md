@@ -121,9 +121,13 @@ TCP using these 2 number to understand if some packets are lost
 ##### Java WebSocket
 * websocket is application level protocol (similar to HTTP) that runs on top of TCP
 * it has its own protocol rules (just like HTTP) like handshake
-* it's designed to run in the browser, so browser can connect to your application and they can communicate with each other
+* it's designed to run in the browser, so browser can connect to your application, and they can communicate with each other
 * java doesn't have default implementation, but there are many third-party libraries
+* `javax.websocket` was moved to `jakarta API`
 Don't confuse it with plain socket which is java native implementation of TCP protocol. It's versatile and can be used anywhere.
+You can use node.js utility `wscat -c ws://127.0.0.1:8080` to connect to ws and run the app.
+Although `javax.websocket` defines API to build websocket server, there is no such server in java. You have to either use any third-party servers or manually setup your own server with `java.net.SocketServer` class. Otherwise, your websocket just would be class in java.
+  
 
 ##### Java HTTP
 * HTTP is application-level protocol that runs on top of TCP
@@ -132,3 +136,8 @@ Don't confuse it with plain socket which is java native implementation of TCP pr
 
 ### Wireshark
 For better understanding of network communication you can use [wireshark](https://www.wireshark.org) app for traffic analysis. With this utility you can view network packages and analyze their data.
+
+* rewrite tcp socket to send raw bytes
+* create spring project and check how it works with wireshark
+* add java basic http client/server code
+* add ws code
