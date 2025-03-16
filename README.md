@@ -146,7 +146,3 @@ Since HTTP is standard protocol, wireshark display it as so, but if you look clo
 
 ### Wireshark
 For better understanding of network communication you can use [wireshark](https://www.wireshark.org) app for traffic analysis. With this utility you can view network packages and analyze their data.
-
-* rewrite tcp socket to send raw bytes
-* create spring project and check how it works with wireshark
-* add java basic http client/server code

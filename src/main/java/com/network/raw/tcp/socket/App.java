@@ -6,7 +6,8 @@ public class App {
         String serverHost = "127.0.0.1";
         TcpServer server = new TcpServer(serverPort);
         new Thread(server).start();
-        //new Thread(new TcpClient(serverPort, serverHost)).start();
+        new Thread(new TcpClient(serverPort, serverHost)).start();
+        // launch second client
         //new Thread(new TcpClient(serverPort, serverHost)).start();
     }
 }
