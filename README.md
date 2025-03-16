@@ -133,6 +133,10 @@ Although `javax.websocket` defines API to build websocket server, there is no su
 * HTTP is application-level protocol that runs on top of TCP
 * it's connection-less protocol, where client connect to server, get response and connection is closed
 * you can implement basic HTTP protocol on top of Java sockets
+You can setup spring boot project which has built-in web-server. And start the app. You can use `curl` to call HTTP API. If you call API `curl http://127.0.0.1:8080/users` and check wireshark you will see.
+![wireshark HTTP](/data/wireshark-http-get-request.png)
+Since HTTP is standard protocol, wireshark display it as so, but if you look close, under-the-hood it's just simple TCP call with `PSH, ACK` flag, both HTTP request and response. Pay attention that after getting response, client send `FIN` to close TCP connection. So if you look closely into `HTTP` response, it's basically TCP push message
+![wireshark HTTP](/data/wireshark-http-server-response.png)
 
 ### Wireshark
 For better understanding of network communication you can use [wireshark](https://www.wireshark.org) app for traffic analysis. With this utility you can view network packages and analyze their data.
@@ -140,4 +144,3 @@ For better understanding of network communication you can use [wireshark](https:
 * rewrite tcp socket to send raw bytes
 * create spring project and check how it works with wireshark
 * add java basic http client/server code
-* add ws code
