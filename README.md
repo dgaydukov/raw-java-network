@@ -82,7 +82,11 @@ Don't confuse following protocols:
 * HTTP - abstraction on top of TCP with java
 * WebSocket - abstraction on top of TCP
 * All other communication are based on either of these 3, for example Kafka underneath using its own binary implementation on top of TCP
-Here we will show java examples with all of above implementation starting with raw TCP
+Here we will show java examples with all above implementation starting with raw TCP.
+TCP retransmission - TCP ensures packet deliver, and use the concept of timer. Once sender sends data, it starts timer:
+* if sender gets ACK (receiver has received data and send ACK) then timer is expired
+* if sender doesn't get ACK and timer is up, sender re-send packet and create new timer
+Ad you see TCP on the protocol level ensures delivery and order of packets.
 
 ##### Java Socket
 The term socket programming can be applied to both TCP and UDP, but usually when we say socket, we imply TCP socket. Since TCP is connection-based protocol, here we can have a proper Client and Server. Where Client connects to Server, and they start communicate. You can run our [TCP App](/src/main/java/com/network/raw/tcp/socket/App.java) and see how it works. You can connect with netcat. App is written to such a way that for each new connection it creates a separate thread where it handles it.
