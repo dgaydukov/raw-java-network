@@ -13,12 +13,13 @@ public class ChannelUdpClient implements Runnable{
     private final DatagramChannel client;
     private final ByteBuffer buffer = ByteBuffer.allocate(256);
 
-    public ChannelUdpClient(String serverHost, int serverPort){
+    public ChannelUdpClient(String serverHost, int serverPort, String clientHost, int clientPort){
         try{
             InetSocketAddress serverAddress = new InetSocketAddress(serverHost, serverPort);
+            InetSocketAddress clientAddress = new InetSocketAddress(clientHost, clientPort);
             DatagramChannel channel = DatagramChannel.open();
-            // bind null, cause it's not server
-            client = channel.bind(null);
+            // bind can be null, cause it's not server, random port would be assigned
+            client = channel.bind(clientAddress);
             client.connect(serverAddress);
         } catch (IOException ex){
             throw new RuntimeException(ex);
