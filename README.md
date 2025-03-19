@@ -136,6 +136,7 @@ TCP using these 2 number to understand if some packets are lost
 * for TCP socket - we have to create new thread to each connected client, [TCP Socket](/src/main/java/com/network/raw/tcp/socket/App.java), but with selector we can handle all clients in a single thread
 * we register multiple channels in single selector - when I/O happens, selector notify us
 * `FileChannels` can't be used with selector, because it can't be switched into non-blocking mode, like socket channels
+Conclusion: NIO for UDP is oversold, you don't need it, because in UDP every messages is self-contained request. Yet for TCP, NIO with selectors is really a good choice, because in case of TCP you can handle multiple clients all in a single thread.
 
 ##### Java WebSocket
 * websocket is application level protocol (similar to HTTP) that runs on top of TCP
