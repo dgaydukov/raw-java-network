@@ -155,6 +155,7 @@ Websocket under-the-hood works on top of TCP, and same way open TCP connection a
 ![wireshark websocket](/data/wireshark-websocket-disconnect.png)
 
 ##### Java HTTP
+Look into [TCP Channel](/src/main/java/com/network/raw/tcp/nio/App.java) to see how it can handle multiple clients in the single thread.
 * HTTP is application-level protocol that runs on top of TCP
 * it's connection-less protocol, where client connect to server, get response and connection is closed
 * you can implement basic HTTP protocol on top of Java sockets
