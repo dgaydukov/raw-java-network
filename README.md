@@ -11,6 +11,7 @@
     * [Java Socket](#java-socket)
     * [Java WebSocket](#java-websocket)
     * [Java HTTP](#java-http)
+    * [TCP NIO](#tcp-nio)
 * [Wireshark](#wireshark)
 
 ### Description
@@ -128,6 +129,13 @@ You can notice that `Seq, Ack` keep increasing:
 TCP using these 2 number to understand if some packets are lost
 4. When somebody decides to close connection he sends `FIN`
 ![wireshark TCP close](/data/wireshark-tcp-close-connection.png)
+
+##### TCP NIO
+* selector - monitors many channels and understand when a channel is available for data transfers
+* with selector - single thread can be used to manage multiple channels
+* for TCP socket - we have to create new thread to each connected client, [TCP Socket](/src/main/java/com/network/raw/tcp/socket/App.java), but with selector we can handle all clients in a single thread
+* we register multiple channels in single selector - when I/O happens, selector notify us
+* `FileChannels` can't be used with selector, because it can't be switched into non-blocking mode, like socket channels
 
 ##### Java WebSocket
 * websocket is application level protocol (similar to HTTP) that runs on top of TCP
