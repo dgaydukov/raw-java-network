@@ -4,6 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
+import java.net.SocketAddress;
 import java.nio.ByteBuffer;
 import java.nio.channels.DatagramChannel;
 
@@ -11,6 +12,7 @@ import java.nio.channels.DatagramChannel;
 public class ChannelUdpClient implements Runnable{
     private final DatagramChannel client;
     private final InetSocketAddress serverAddress;
+    private final ByteBuffer buffer = ByteBuffer.allocate(256);
 
     public ChannelUdpClient(String serverHost, int serverPort){
         try{
@@ -33,9 +35,12 @@ public class ChannelUdpClient implements Runnable{
     }
 
     private void send(String msg){
-        ByteBuffer buffer = ByteBuffer.wrap(msg.getBytes());
+        ByteBuffer sendBuffer = ByteBuffer.wrap(msg.getBytes());
         try {
-            client.send(buffer, serverAddress);
+            client.send(sendBuffer, serverAddress);
+            SocketAddress address = client.receive(buffer);
+            String received = new String(buffer.array(), 0, buffer.position());
+            log.info("Client received: msg={}, address={}", received, address);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
