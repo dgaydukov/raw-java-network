@@ -5,6 +5,8 @@
 * [UDP](#udp)
     * [UDP Unicast](#udp-unicast)
     * [UDP Multicast](#udp-multicast)
+    * [UDP Connection Detection](#udp-connection-detection)
+    * [UDP NIO](#udp-nio)
 * [TCP](#tcp)
     * [Java Socket](#java-socket)
     * [Java WebSocket](#java-websocket)
@@ -74,6 +76,11 @@ Below is how it looks like from wireshark
 ![wireshark UDP client-server](/data/wireshark-udp-icmp-response.png)
 This is how message itself looks like
 ![wireshark UDP client-server](/data/wireshark-udp-icmp-message.png)
+
+##### UDP NIO
+You can check how to build UDP client/server connection using `java.net`. But this maybe not the optimal solution, because you need to run loop with `while (true)` to constantly check if there is new message from client. Especially this is true to TCP sockets, cause here you create separate thread for each new client. That's why java provided new networking API in `java.nio`, with classes like `DatagramChannel` you can create client/server, but without endless loops. This class supports "multiplexed-wait", so you can ask "is there a packet for me on any of the existing port". But without it you have to use thread-per-port. So the advantage:
+* for UDP - for server you have to use thread-per-port, but with channel you can use multiple port in single thread
+* for TCP - you have to use thread-per-client, but with channels you can handle all clients in the same thread
 
 ### TCP
 Transmission Control Protocol - compare to UDP is reliable and connection-based. To start communication client and server need to establish connection first, and then they can keep sending messages to each other using this connection. Terminology also differs, compare to datagrams in UDP, here packets are called segments. TCP ensures that segments are delivered and ordered. If there is network congestion it does flow control. That's why TCP packet is larger than UDP, here you need to have sequence number and acknowledgement number to keep track and order of segments sent.
