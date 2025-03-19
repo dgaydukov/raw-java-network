@@ -26,6 +26,7 @@ public class TcpChannelServer implements Runnable{
             serverSocket = ServerSocketChannel.open();
             InetSocketAddress serverAddress = new InetSocketAddress(serverHost, serverPort);
             serverSocket.bind(serverAddress);
+            // by default it's blocking, se we need to set it to non-blocking
             serverSocket.configureBlocking(false);
             serverSocket.register(selector, SelectionKey.OP_ACCEPT);
         } catch (IOException ex){
@@ -43,10 +44,10 @@ public class TcpChannelServer implements Runnable{
                 while (iterator.hasNext()) {
                     SelectionKey key = iterator.next();
                     if (key.isAcceptable()) {
-                        register(selector, serverSocket);
+                        addClient(selector, serverSocket);
                     }
                     if (key.isReadable()) {
-                        send(buffer, key);
+                        sendMessage(buffer, key);
                     }
                     iterator.remove();
                 }
@@ -56,25 +57,27 @@ public class TcpChannelServer implements Runnable{
         }
     }
 
-    private void register(Selector selector, ServerSocketChannel serverSocket) throws IOException {
+    private void addClient(Selector selector, ServerSocketChannel serverSocket) throws IOException {
         SocketChannel client = serverSocket.accept();
         client.configureBlocking(false);
         client.register(selector, SelectionKey.OP_READ);
     }
 
-    private void send(ByteBuffer buffer, SelectionKey key) throws IOException {
+    private void sendMessage(ByteBuffer buffer, SelectionKey key) throws IOException {
         SocketChannel client = (SocketChannel) key.channel();
         buffer.clear();
         int r = client.read(buffer);
-        String msg = new String(buffer.array());
+        String receivedMsg = new String(buffer.array(), 0, buffer.position());
+        // we trim, because when we send with netcat, it adds \n to the end of message, apparently because of enter button
+        String msg = receivedMsg.trim();
         SocketAddress clientAddress = client.getRemoteAddress();
-        log.info("r={}, msg={}, address={}", r, msg.trim(), clientAddress);
-        if (r == -1 || new String(buffer.array()).trim().equals(TCP_CLOSE)) {
+        log.info("Server received: r={}, msg={}, address={}", r, msg, clientAddress);
+        if (r == -1 || TCP_CLOSE.equals(msg)) {
             client.close();
             log.info("closing connection: address={}", clientAddress);
         }
         else {
-            String responseMsg = "server response, originalMsg=" + msg;
+            String responseMsg = "server response, originalMsg=" + receivedMsg;
             ByteBuffer response = ByteBuffer.wrap(responseMsg.getBytes());
             client.write(response);
         }

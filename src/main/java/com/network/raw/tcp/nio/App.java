@@ -5,6 +5,8 @@ public class App {
         int serverPort = 5555;
         String serverHost = "127.0.0.1";
         TcpChannelServer server = new TcpChannelServer(serverHost, serverPort);
+        TcpChannelClient client = new TcpChannelClient(serverHost, serverPort);
         new Thread(server).start();
+        new Thread(client).start();
     }
 }
