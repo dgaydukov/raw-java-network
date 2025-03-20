@@ -90,7 +90,12 @@ it waits until it receives message. Because by default NIO is configured to be b
 ```
 channel.configureBlocking(false);
 ```
-You code would be turned into non-blocking. And the line above to receive message, will not wait for incoming message. If there are no incoming messages, it would return immediately `null`. Same with client. In my opinion it's better to use blocking, because code is simpler, but if your code doesn't need to wait, you can turn on this feature.
+Your code would be turned into non-blocking. And the line above to receive message, will not wait for incoming message. If there are no incoming messages, it would return immediately `null`. Same with client. In my opinion it's better to use blocking, because code is simpler, but if your code doesn't need to wait, you can turn on this feature.
+
+### UDP datagram size and MTU
+By default, the size of UDP datagram is 65K, which means you can send messages with length up to 65000. But if you try to send bigger message, your `send` method would throw `java.io.IOException: Message too long`. But below this limit, we can send UDP datagram and even check it in wireshark
+![wireshark UDP 65k packet](/data/wireshark-udp-65k-packet.png)
+But MTU is still 1500 bytes. How this possible?
 
 ### TCP
 Transmission Control Protocol - compare to UDP is reliable and connection-based. To start communication client and server need to establish connection first, and then they can keep sending messages to each other using this connection. Terminology also differs, compare to datagrams in UDP, here packets are called segments. TCP ensures that segments are delivered and ordered. If there is network congestion it does flow control. That's why TCP packet is larger than UDP, here you need to have sequence number and acknowledgement number to keep track and order of segments sent.
