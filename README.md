@@ -82,6 +82,15 @@ This is how message itself looks like
 You can check how to build UDP client/server connection using `java.net`. But this maybe not the optimal solution, because you need to run loop with `while (true)` to constantly check if there is new message from client. Especially this is true to TCP sockets, cause here you create separate thread for each new client. That's why java provided new networking API in `java.nio`, with classes like `DatagramChannel` you can create client/server, but without endless loops. This class supports "multiplexed-wait", so you can ask "is there a packet for me on any of the existing port". But without it you have to use thread-per-port. So the advantage:
 * for UDP - for server you have to use thread-per-port, but with channel you can use multiple port in single thread
 * for TCP - you have to use thread-per-client, but with channels you can handle all clients in the same thread
+If you open code [ChannelUdpServer](/src/main/java/com/network/raw/udp/nio/ChannelUdpServer.java) you will notice that it's also blocking. That's why it's working just as usual `UdpServer`, it waits for messages, so this line
+```
+SocketAddress address = server.receive(buffer);
+```
+it waits until it receives message. Because by default NIO is configured to be blocking. But if you add this code
+```
+channel.configureBlocking(false);
+```
+You code would be turned into non-blocking. And the line above to receive message, will not wait for incoming message. If there are no incoming messages, it would return immediately `null`. Same with client. In my opinion it's better to use blocking, because code is simpler, but if your code doesn't need to wait, you can turn on this feature.
 
 ### TCP
 Transmission Control Protocol - compare to UDP is reliable and connection-based. To start communication client and server need to establish connection first, and then they can keep sending messages to each other using this connection. Terminology also differs, compare to datagrams in UDP, here packets are called segments. TCP ensures that segments are delivered and ordered. If there is network congestion it does flow control. That's why TCP packet is larger than UDP, here you need to have sequence number and acknowledgement number to keep track and order of segments sent.
