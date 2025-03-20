@@ -95,7 +95,7 @@ Your code would be turned into non-blocking. And the line above to receive messa
 ### UDP datagram size and MTU
 By default, the size of UDP datagram is 65K, which means you can send messages with length up to 65000. But if you try to send bigger message, your `send` method would throw `java.io.IOException: Message too long`. But below this limit, we can send UDP datagram and even check it in wireshark
 ![wireshark UDP 65k packet](/data/wireshark-udp-65k-packet.png)
-But MTU is still 1500 bytes. How this possible?
+But MTU is still 1500 bytes. How this possible? Sending over localhost you send jumbo frames, but in real-world Ethernet you will send frames with size 1500, and for real-world apps, you need to keep in mind that your payload (datagram size) shouldn't exceed 1500. Yet if your packet would exceed MTU, then network under-the-hood would break your payload into fragments and reasseble. But for UDP it's a problem, what if some fragment won't arrive, then whole payload would be incorrectly reassembled. For this use-case, it's always better to use payload size compatible with MTU size.
 
 ### TCP
 Transmission Control Protocol - compare to UDP is reliable and connection-based. To start communication client and server need to establish connection first, and then they can keep sending messages to each other using this connection. Terminology also differs, compare to datagrams in UDP, here packets are called segments. TCP ensures that segments are delivered and ordered. If there is network congestion it does flow control. That's why TCP packet is larger than UDP, here you need to have sequence number and acknowledgement number to keep track and order of segments sent.
