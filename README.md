@@ -99,14 +99,14 @@ But MTU is still 1500 bytes. How this possible? Sending over localhost you send 
 So to summarize, UDP doesn't do fragmentation, it can send any message up to 65K. But below UDP we have IP protocol, which depending upon network, will fragment the underlying packet into multiple fragments if original size exceed MTU (for Ethernet MTU is 1500). After fragmentation every fragment is a packet of its own (have its own IP header) and send separately. That's the problem with UDP, cause we would have instead of one large UDP, many fragments would be sent, and some may get lost.
 
 ### TCP
+Java as high-level language doesn't provide low level access to IP, so you can't manipulate IP packets directly. Because of this, for example in java you can't access IP header data, like `TTL`. If you want raw manipulation if IP, you have to use third-party libraries or other languages like C/C++/python. But it provides high-level abstraction on top of TCP/UDP protocols, so you can use it to send data over network. TCP is a connection-oriented protocol, which means that before sending data, you need to establish connection between client and server. After that, you can send data in both directions.
 Transmission Control Protocol - compare to UDP is reliable and connection-based. To start communication client and server need to establish connection first, and then they can keep sending messages to each other using this connection. Terminology also differs, compare to datagrams in UDP, here packets are called segments. TCP ensures that segments are delivered and ordered. If there is network congestion it does flow control. That's why TCP packet is larger than UDP, here you need to have sequence number and acknowledgement number to keep track and order of segments sent.
 Don't confuse following protocols:
-* Socket - raw TCP/IP contamination. When we talk about java socket - we imply that this is java abstraction on TCP, so TCP java programming is basically socket programming and based on 2 java classes `Socket/ServerSocket` from `java.net` package
-* HTTP - abstraction on top of TCP with java
-* WebSocket - abstraction on top of TCP
-* All other communication are based on either of these 3, for example Kafka underneath using its own binary implementation on top of TCP
-Here we will show java examples with all above implementation starting with raw TCP.
-TCP retransmission - TCP ensures packet deliver, and use the concept of timer. Once sender sends data, it starts timer:
+* Socket - raw TCP/IP communication. When we talk about java sockets - we imply that this is java abstraction on top of TCP, so TCP java programming is basically socket programming and based on 2 java classes `Socket/ServerSocket` from `java.net` package
+* HTTP - java abstraction on top of TCP
+* WebSocket - java abstraction on top of TCP
+
+All other communication are based on either of these 3, for example Kafka underneath using its own binary implementation on top of TCP. Here we will show java examples with all above implementation starting with raw TCP. TCP retransmission - TCP ensures packet deliver, and use the concept of timer. Once sender sends data, it starts timer:
 * if sender gets ACK (receiver has received data and send ACK) then timer is expired
 * if sender doesn't get ACK and timer is up, sender re-send packet and create new timer
 Ad you see TCP on the protocol level ensures delivery and order of packets.
