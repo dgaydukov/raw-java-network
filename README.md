@@ -181,4 +181,4 @@ Since HTTP is standard protocol, wireshark display it as so, but if you look clo
 ![wireshark HTTP](/data/wireshark-http-server-response.png)
 
 ### Wireshark
-For better understanding of network communication you can use [wireshark](https://www.wireshark.org) app for traffic analysis. With this utility you can view network packages and analyze their data.
+For better understanding of network communication you can use [wireshark](https://www.wireshark.org) app for traffic analysis. With this utility you can view network packages and analyze their data. Comparing to java, that doesn't have access to raw IP, wireshark can see all the details, including raw IP, so you can check TTL for example. 

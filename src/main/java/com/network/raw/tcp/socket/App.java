@@ -7,7 +7,11 @@ public class App {
         TcpServer server = new TcpServer(serverPort);
         new Thread(server).start();
         new Thread(new TcpClient(serverPort, serverHost)).start();
-        // launch second client
-        //new Thread(new TcpClient(serverPort, serverHost)).start();
+
+        /**
+         * If you want to test with multiple clients, uncomment the following lines
+         */
+        // new Thread(new TcpClient(serverPort, serverHost)).start();
+        // new Thread(new TcpClient(serverPort, serverHost)).start();
     }
 }
