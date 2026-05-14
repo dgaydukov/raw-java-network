@@ -11,13 +11,14 @@ import java.net.Socket;
 
 @Slf4j
 public class TcpServer implements Runnable{
-    private ServerSocket serverSocket;
+    private ServerSocket server;
     private PrintWriter out;
     private BufferedReader in;
 
     public TcpServer(int serverPort) {
         try{
-            serverSocket = new ServerSocket(serverPort);
+            server = new ServerSocket(serverPort);
+            log.info("Server started: address={}:{}", server.getInetAddress().getHostName(), server.getLocalPort());
         } catch (IOException ex){
             throw new RuntimeException(ex);
         }
@@ -29,9 +30,9 @@ public class TcpServer implements Runnable{
                 out = new PrintWriter(client.getOutputStream(), true);
                 in = new BufferedReader(new InputStreamReader(client.getInputStream()));
                 String msg = in.readLine();
-                log.info("Server received: msg={}, address={}, port={}", msg, client.getInetAddress(), client.getPort());
+                log.info("Server received: msg={}, address={}:{}", msg, client.getInetAddress().getHostName(), client.getPort());
                 if (msg == null){
-                    log.info("Client disconnected: address={}, port={}", client.getInetAddress(), client.getPort());
+                    log.info("Client disconnected: address={}:{}", client.getInetAddress().getHostName(), client.getPort());
                     break;
                 }
                 out.println("server response, originalMsg=" + msg);
@@ -43,8 +44,8 @@ public class TcpServer implements Runnable{
 
     public void handleUser(){
         try {
-            final Socket client = serverSocket.accept();
-            log.info("Client connected: address={}, port={}", client.getInetAddress(), client.getPort());
+            final Socket client = server.accept();
+            log.info("Client connected: address={}:{}", client.getInetAddress().getHostName(), client.getPort());
             new Thread(()-> handleMessage(client)).start();
         } catch (IOException e) {
             throw new RuntimeException(e);

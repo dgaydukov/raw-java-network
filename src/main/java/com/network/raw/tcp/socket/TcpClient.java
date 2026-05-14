@@ -19,6 +19,7 @@ public class TcpClient implements Runnable{
         this.numOfMessages = numOfMessages;
         try{
             client = new Socket(serverHost, serverPort);
+            log.info("Client started: address={}:{}", client.getInetAddress().getHostName(), client.getLocalPort());
             out = new PrintWriter(client.getOutputStream(), true);
             in = new BufferedReader(new InputStreamReader(client.getInputStream()));
         } catch (IOException ex){
