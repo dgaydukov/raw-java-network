@@ -44,8 +44,8 @@ public class TcpClient implements Runnable{
 
     @Override
     public void run() {
-        for (long i = 0; i <= numOfMessages; i++) {
-            String msg = "msg_" + clientId + "__" + i++;
+        for (long i = 1; i <= numOfMessages; i++) {
+            String msg = "msg_" + clientId + "__" + i;
             sendAndReceive(msg);
             sleep(1);
         }

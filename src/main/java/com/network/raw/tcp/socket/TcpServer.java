@@ -8,6 +8,7 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.net.SocketException;
 
 @Slf4j
 public class TcpServer implements Runnable{
@@ -36,6 +37,9 @@ public class TcpServer implements Runnable{
                     break;
                 }
                 out.println("server response, originalMsg=" + msg);
+            } catch (SocketException ex){
+                log.error("Client forcibly disconnected: address={}:{}", client.getInetAddress().getHostName(), client.getPort(), ex);
+                break;
             } catch (IOException ex){
                 throw new RuntimeException(ex);
             }
