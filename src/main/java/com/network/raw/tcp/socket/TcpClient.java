@@ -27,7 +27,7 @@ public class TcpClient implements Runnable{
         }
     }
 
-
+    // use this constructor to send messages forever
     public TcpClient(int serverPort, String serverHost){
         this(serverPort, serverHost, Long.MAX_VALUE);
     }
