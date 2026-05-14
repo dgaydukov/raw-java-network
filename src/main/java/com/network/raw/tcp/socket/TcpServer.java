@@ -23,14 +23,15 @@ public class TcpServer implements Runnable{
         }
     }
 
-    public void handleMessage(Socket clientSocket){
+    public void handleMessage(Socket client){
         while (true){
             try{
-                out = new PrintWriter(clientSocket.getOutputStream(), true);
-                in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
+                out = new PrintWriter(client.getOutputStream(), true);
+                in = new BufferedReader(new InputStreamReader(client.getInputStream()));
                 String msg = in.readLine();
-                log.info("Server received: msg={}, address={}, port={}", msg, clientSocket.getInetAddress(), clientSocket.getPort());
+                log.info("Server received: msg={}, address={}, port={}", msg, client.getInetAddress(), client.getPort());
                 if (msg == null){
+                    log.info("Client disconnected: address={}, port={}", client.getInetAddress(), client.getPort());
                     break;
                 }
                 out.println("server response, originalMsg=" + msg);
@@ -42,11 +43,9 @@ public class TcpServer implements Runnable{
 
     public void handleUser(){
         try {
-            final Socket clientSocket = serverSocket.accept();
-            log.info("Client connected: address={}, port={}", clientSocket.getInetAddress(), clientSocket.getPort());
-            new Thread(()->{
-                    handleMessage(clientSocket);
-            }).start();
+            final Socket client = serverSocket.accept();
+            log.info("Client connected: address={}, port={}", client.getInetAddress(), client.getPort());
+            new Thread(()-> handleMessage(client)).start();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

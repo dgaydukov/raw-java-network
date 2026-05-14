@@ -8,21 +8,27 @@ import java.util.Random;
 
 @Slf4j
 public class TcpClient implements Runnable{
-    private Socket clientSocket;
+    private Socket client;
     private PrintWriter out;
     private BufferedReader in;
     final int clientId;
+    final long numOfMessages;
 
-    public TcpClient(int serverPort, String serverHost){
+    public TcpClient(int serverPort, String serverHost, long numOfMessages){
         clientId = new Random().nextInt(100, 999);
+        this.numOfMessages = numOfMessages;
         try{
-            clientSocket = new Socket(serverHost, serverPort);
-            out = new PrintWriter(clientSocket.getOutputStream(), true);
-            in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
+            client = new Socket(serverHost, serverPort);
+            out = new PrintWriter(client.getOutputStream(), true);
+            in = new BufferedReader(new InputStreamReader(client.getInputStream()));
         } catch (IOException ex){
             throw new RuntimeException(ex);
         }
+    }
 
+
+    public TcpClient(int serverPort, String serverHost){
+        this(serverPort, serverHost, Long.MAX_VALUE);
     }
 
     public void sendAndReceive(String msg) {
@@ -37,11 +43,15 @@ public class TcpClient implements Runnable{
 
     @Override
     public void run() {
-        int i = 0;
-        while (true) {
+        for (long i = 0; i <= numOfMessages; i++) {
             String msg = "msg_" + clientId + "__" + i++;
             sendAndReceive(msg);
-            sleep(30);
+            sleep(1);
+        }
+        try {
+            client.close();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
     }
 
