@@ -145,6 +145,13 @@ TCP using these 2 number to understand if some packets are lost
 4. When somebody decides to close connection he sends `FIN`
 ![wireshark TCP close](/data/wireshark-tcp-close-connection.png)
 
+There are 3 ways understand if client is disconnected:
+1. Graceful disconnection: client gracefully close connection and OS will send `FIN` packet, you can easily handle it, because `InputStream` will return `-1` meaning client disconnected and no more messages sent
+2. Ungraceful Shutdown - OS will detect that program is dead and send `RST` packet, in this case `java.net.SocketException: Connection reset` would be thrown on the server side
+3. Silent Drop - in this case nothing would happen and your server would hand indefinitely trying to read next byte from `InputStream`. There are several ways to solve this:
+   * `socket.setSoTimeout(30000)` - when you try `read()` - if no response during certain timeout, we will get `SocketTimeoutException`
+   * `socket.setKeepAlive(true)` - OS handles sending keepalive itself, and if it detects that connection is dead your `read()` will return `-1`
+
 ##### TCP NIO
 * selector - monitors many channels and understand when a channel is available for data transfers
 * with selector - single thread can be used to manage multiple channels
